@@ -3,9 +3,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 import os
 
-# Definir o nome do arquivo CSV para armazenar os registros de sono
-csv_filename = 'registros_sono.csv'
-
 # Função para verificar se o CSV existe; se não, criar com as colunas necessárias
 def verifica_exist_csv(csv_filename):
     if not os.path.isfile(csv_filename):
@@ -58,49 +55,45 @@ def print_data_hora(data_sono, hora_sono, tipo='Sono'):
     else:
         st.write(f'Por favor, selecione tanto a data quanto a hora para {tipo}.')
 
-# Inicializar a aplicação
-verifica_exist_csv(csv_filename)
+if __name__ == '__main__':
+    
+    csv_filename = 'registros_sono.csv'
+    verifica_exist_csv(csv_filename)
 
-# Título principal
-_, col2_title_principal, _ = st.columns([1, 3, 1])
-col2_title_principal.title('Registro(s) de Sono')
+    _, col2_title_principal, _ = st.columns([1, 3, 1])
+    col2_title_principal.title('Registro(s) de Sono')
 
-# Entrada para dormir
-col1_data_dormir, col2_hora_dormir = st.columns(2)
-with col1_data_dormir:
-    data_dormir = st.date_input('Dia que foi dormir', key='data_dormir')
-with col2_hora_dormir:
-    hora_dormir = st.time_input('Horário que foi dormir', key='hora_dormir')
-print_data_hora(data_dormir, hora_dormir, tipo='Sono')
+    col1_data_dormir, col2_hora_dormir = st.columns(2)
+    with col1_data_dormir:
+        data_dormir = st.date_input('Dia que foi dormir', key='data_dormir')
+    with col2_hora_dormir:
+        hora_dormir = st.time_input('Horário que foi dormir', key='hora_dormir')
+    print_data_hora(data_dormir, hora_dormir, tipo='Sono')
 
-st.markdown("---")
+    st.markdown("---")
 
-# Entrada para acordar
-col1_data_acordar, col2_hora_acordar = st.columns(2)
-with col1_data_acordar:
-    data_acordar = st.date_input('Dia que acordou', key='data_acordar')
-with col2_hora_acordar:
-    hora_acordar = st.time_input('Horário que acordou', key='hora_acordar')
-print_data_hora(data_acordar, hora_acordar, tipo='Acordar')
+    col1_data_acordar, col2_hora_acordar = st.columns(2)
+    with col1_data_acordar:
+        data_acordar = st.date_input('Dia que acordou', key='data_acordar')
+    with col2_hora_acordar:
+        hora_acordar = st.time_input('Horário que acordou', key='hora_acordar')
+    print_data_hora(data_acordar, hora_acordar, tipo='Acordar')
 
-# Botão para salvar o registro
-if st.button('Salvar registro'):
-    horas = calcular_horas_dormidas(data_dormir, hora_dormir, data_acordar, hora_acordar)
-    adicionar_registro_csv(data_dormir, hora_dormir, data_acordar, hora_acordar, horas)
-    st.success(f'Registro salvo com sucesso! Você dormiu {horas} horas.')
+    # Botão para salvar o registro
+    if st.button('Salvar registro'):
+        horas = calcular_horas_dormidas(data_dormir, hora_dormir, data_acordar, hora_acordar)
+        adicionar_registro_csv(data_dormir, hora_dormir, data_acordar, hora_acordar, horas)
+        st.success(f'Registro salvo com sucesso! Você dormiu {horas} horas.')
 
-st.markdown("---")
+    st.markdown("---")
 
-# Título secundário para exibir os registros
-_, col2_title_secondary, _ = st.columns([1, 3, 1])
-col2_title_secondary.title('Registro(s) de Sono')
+    # Título secundário para exibir os registros
+    _, col2_title_secondary, _ = st.columns([1, 3, 1])
+    col2_title_secondary.title('Registro(s) de Sono')
 
-# Ler e exibir os registros
-registros = ler_registros_csv()
+    registros = ler_registros_csv()
 
-# Formatar as datas para exibição
-registros['Data dormir'] = pd.to_datetime(registros['Data dormir']).dt.strftime('%d/%m/%Y')
-registros['Data acordar'] = pd.to_datetime(registros['Data acordar']).dt.strftime('%d/%m/%Y')
-
-# Exibir o dataframe
-st.dataframe(registros)
+    # Formatar as datas para exibição
+    registros['Data dormir'] = pd.to_datetime(registros['Data dormir']).dt.strftime('%d/%m/%Y')
+    registros['Data acordar'] = pd.to_datetime(registros['Data acordar']).dt.strftime('%d/%m/%Y')
+    st.dataframe(registros)
